@@ -45,26 +45,14 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
 
       {/* Search Bar */}
       <input
+        className="search-bar"
         type="text"
         placeholder="Search Products..."
         value={searchQuery}
         onChange={handleSearchChange}
-        style={{
-          marginBottom: "20px",
-          padding: "10px",
-          width: "300px",
-          marginLeft: "3vw",
-        }}
       />
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "16px",
-          justifyContent: "center",
-        }}
-      >
+      <div className="product-card-container">
         {currentProducts.map((product) => (
           <Link
             className="product-card-wrapper"

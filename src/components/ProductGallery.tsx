@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { fetchProducts } from "../services/photoService";
+import React, { useState } from "react";
 import { Product } from "../interfaces/products";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
@@ -68,7 +67,12 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
         placeholder="Search Products..."
         value={searchQuery}
         onChange={handleSearchChange}
-        style={{ marginBottom: "20px", padding: "10px", width: "300px" }}
+        style={{
+          marginBottom: "20px",
+          padding: "10px",
+          width: "300px",
+          marginLeft: "3vw",
+        }}
       />
 
       <div
@@ -80,7 +84,11 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
         }}
       >
         {currentProducts.map((product) => (
-          <Link key={product.id} to={`/products/${product.id}`}>
+          <Link
+            className="product-card-wrapper"
+            key={product.id}
+            to={`/products/${product.id}`}
+          >
             <ProductCard key={product.id} product={product} />
           </Link>
         ))}

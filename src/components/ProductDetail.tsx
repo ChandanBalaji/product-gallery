@@ -18,6 +18,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ products }) => {
     <div style={{ padding: "20px", textAlign: "center" }}>
       <h1>{product.title}</h1>
       <img
+        loading="lazy"
         src={product.url}
         alt={product.title}
         style={{ width: "300px", height: "auto" }}

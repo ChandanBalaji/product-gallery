@@ -23,12 +23,30 @@
   border-radius: 4px;
 }
 
-.product-card h2 {
+/* ProductCard.css */
+.product-title {
   font-size: 1.2em;
   margin: 10px 0;
   color: #333;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis */
+  max-width: 100%; /* Ensure it fits within the card */
+  position: relative; /* Position for the tooltip */
+}
+
+.product-title:hover::after {
+  content: attr(title); /* Show the full title */
+  position: absolute;
+  white-space: normal; /* Allow wrapping */
+  background-color: #fff; /* Background color */
+  border: 1px solid #ccc; /* Border */
+  padding: 5px; /* Padding */
+  z-index: 10; /* Ensure it appears above other content */
+  left: 0; /* Align with the title */
+  top: 100%; /* Position below the title */
+  width: max-content; /* Adjust width to content */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Shadow for tooltip */
 }
 
 .product-card p {

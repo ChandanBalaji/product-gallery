@@ -10,7 +10,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="product-card">
       <img loading="lazy" src={product.thumbnailUrl} alt={product.title} />
-      <h2>{product.title}</h2>
+      <h2 className="product-title">{product.title}</h2>
       <p>Album ID: {product.albumId}</p>
     </div>
   );

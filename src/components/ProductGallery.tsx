@@ -5,32 +5,15 @@ import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
 import "./ProductGallery.css"; // Import the CSS file
 
-const ProductGallery: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+interface ProductGalleryProps {
+  products: Product[];
+}
+
+const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [inputPage, setInputPage] = useState<number>(1); // State for page input
   const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
   const itemsPerPage = 10; // Number of items per page
-
-  useEffect(() => {
-    const loadProducts = async () => {
-      try {
-        const fetchedProducts = await fetchProducts();
-        setProducts(fetchedProducts);
-      } catch (err) {
-        setError("Failed to fetch products");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   // Calculate total pages
   const filteredProducts = products.filter((product) =>

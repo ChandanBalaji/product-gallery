@@ -7,7 +7,7 @@ interface ProductCardProps {
   product: Product;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
   return (
     <div className="product-card">
       <img loading="lazy" src={product.thumbnailUrl} alt={product.title} />
@@ -17,6 +17,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <p>Album ID: {product.albumId}</p>
     </div>
   );
-};
+});
 
 export default ProductCard;

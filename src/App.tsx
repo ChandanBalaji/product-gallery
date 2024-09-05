@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ProductGallery from "./components/ProductGallery";
-import ProductDetail from "./components/ProductDetail";
 import { Product } from "./interfaces/products"; // Import your products data
 import { fetchProducts } from "./services/photoService";
+
+const ProductGallery = lazy(() => import("./components/ProductGallery"));
+const ProductDetail = lazy(() => import("./components/ProductDetail"));
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,13 +31,15 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<ProductGallery products={products} />} />
-        <Route
-          path="/products/:id"
-          element={<ProductDetail products={products} />}
-        />
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<ProductGallery products={products} />} />
+          <Route
+            path="/products/:id"
+            element={<ProductDetail products={products} />}
+          />
+        </Routes>
+      </Suspense>
     </Router>
   );
 };

@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProductGallery from "./components/ProductGallery";
+import ProductDetail from "./components/ProductDetail";
+import productsData from "./interfaces/products"; // Import your products data
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -9,10 +12,15 @@ const App: React.FC = () => {
     };
   }, []);
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Product Gallery</h1>
-      <ProductGallery />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ProductGallery />} />
+        <Route
+          path="/products/:id"
+          element={<ProductDetail products={productsData} />}
+        />
+      </Routes>
+    </Router>
   );
 };
 

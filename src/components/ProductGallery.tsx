@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchProducts } from "../services/photoService";
 import { Product } from "../interfaces/products";
 import ProductCard from "./ProductCard";
+import { Link } from "react-router-dom";
 import "./ProductGallery.css"; // Import the CSS file
 
 const ProductGallery: React.FC = () => {
@@ -10,6 +11,7 @@ const ProductGallery: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [inputPage, setInputPage] = useState<number>(1); // State for page input
+  const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
   const itemsPerPage = 10; // Number of items per page
 
   useEffect(() => {
@@ -31,12 +33,15 @@ const ProductGallery: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   // Calculate total pages
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   // Get current products to display
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = products.slice(
+  const currentProducts = filteredProducts.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
@@ -64,55 +69,95 @@ const ProductGallery: React.FC = () => {
     }
   };
 
+  // Handle search input change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to the first page when searching
+  };
+
   return (
     <div className="product-gallery">
       <h1>Product Gallery</h1>
+
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search Products..."
+        value={searchQuery}
+        onChange={handleSearchChange}
+        style={{ marginBottom: "20px", padding: "10px", width: "300px" }}
+      />
+
       <div
         style={{
           display: "flex",
           flexWrap: "wrap",
           gap: "16px",
           justifyContent: "center",
-          height: "100%",
-          overflow: "auto",
         }}
       >
         {currentProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <Link key={product.id} to={`/products/${product.id}`}>
+            <ProductCard key={product.id} product={product} />
+          </Link>
         ))}
       </div>
 
       {/* Pagination Controls */}
       <div className="pagination">
-        {Array.from({ length: Math.min(5, totalPages) }, (_, index) => {
-          const pageNumber = Math.max(1, currentPage - 2 + index); // Show 5 pages centered around current page
-          return (
-            pageNumber <= totalPages && (
-              <button
-                key={pageNumber}
-                onClick={() => handlePageChange(pageNumber)}
-                disabled={currentPage === pageNumber}
-              >
-                {pageNumber}
-              </button>
-            )
-          );
-        })}
-        <form
-          onSubmit={handleInputSubmit}
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <input
-            type="number"
-            value={inputPage}
-            onChange={handleInputChange}
-            min={0}
-            max={totalPages}
-            style={{ marginRight: "10px", width: "60px" }}
-          />
-          <button type="submit">Go</button>
-        </form>
-        <span style={{ margin: "0 10px" }}>of {totalPages} pages</span>
+        <div>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+
+          {Array.from({ length: Math.min(3, totalPages) }, (_, index) => {
+            const pageNumber = Math.max(1, currentPage + index); // Show 5 pages centered around current page
+            return (
+              pageNumber <= totalPages && (
+                <button
+                  key={pageNumber}
+                  onClick={() => handlePageChange(pageNumber)}
+                  disabled={currentPage === pageNumber}
+                >
+                  {pageNumber}
+                </button>
+              )
+            );
+          })}
+
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+        <div className="pagination-search">
+          <form
+            onSubmit={handleInputSubmit}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <input
+              type="number"
+              value={inputPage}
+              onChange={handleInputChange}
+              min={1}
+              max={totalPages}
+              style={{
+                marginRight: "10px",
+                width: "60px",
+                height: "25px",
+                fontSize: "18px",
+              }}
+            />
+            <button type="submit">Go</button>
+          </form>
+
+          <span style={{ margin: "0 10px" }}>of {totalPages} pages</span>
+        </div>
       </div>
     </div>
   );

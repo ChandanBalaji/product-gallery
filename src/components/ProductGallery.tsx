@@ -3,6 +3,7 @@ import { Product } from "../interfaces/products";
 import ProductCard from "./ProductCard";
 import { Link } from "react-router-dom";
 import "./ProductGallery.css"; // Import the CSS file
+import { Pagination } from "./Pagination";
 
 interface ProductGalleryProps {
   products: Product[];
@@ -10,7 +11,6 @@ interface ProductGalleryProps {
 
 const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [inputPage, setInputPage] = useState<number>(1); // State for page input
   const [searchQuery, setSearchQuery] = useState<string>(""); // State for search query
   const itemsPerPage = 10; // Number of items per page
 
@@ -31,24 +31,6 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
   // Handle page change
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    setInputPage(pageNumber); // Update input page when changing page
-  };
-
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) {
-      // Allow only numbers
-      setInputPage(Number(value));
-    }
-  };
-
-  // Handle input submit
-  const handleInputSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputPage >= 1 && inputPage <= totalPages) {
-      setCurrentPage(inputPage);
-    }
   };
 
   // Handle search input change
@@ -95,61 +77,11 @@ const ProductGallery: React.FC<ProductGalleryProps> = ({ products }) => {
       </div>
 
       {/* Pagination Controls */}
-      <div className="pagination">
-        <div>
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-
-          {Array.from({ length: Math.min(3, totalPages) }, (_, index) => {
-            const pageNumber = Math.max(1, currentPage + index); // Show 5 pages centered around current page
-            return (
-              pageNumber <= totalPages && (
-                <button
-                  key={pageNumber}
-                  onClick={() => handlePageChange(pageNumber)}
-                  disabled={currentPage === pageNumber}
-                >
-                  {pageNumber}
-                </button>
-              )
-            );
-          })}
-
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-        <div className="pagination-search">
-          <form
-            onSubmit={handleInputSubmit}
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <input
-              type="number"
-              value={inputPage}
-              onChange={handleInputChange}
-              min={1}
-              max={totalPages}
-              style={{
-                marginRight: "10px",
-                width: "60px",
-                height: "25px",
-                fontSize: "18px",
-              }}
-            />
-            <button type="submit">Go</button>
-          </form>
-
-          <span style={{ margin: "0 10px" }}>of {totalPages} pages</span>
-        </div>
-      </div>
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+      />
     </div>
   );
 };
